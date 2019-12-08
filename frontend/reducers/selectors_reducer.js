@@ -1,1 +1,1 @@
-selectors_reducer.js
+export const selectAllArrivals = state => Object.values(state.entities.arrivals);

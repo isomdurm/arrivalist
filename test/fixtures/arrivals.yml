@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  arrival_day_of_week: 1
+  arrival_hour: 1
+  arrivals: 1
+
+two:
+  arrival_day_of_week: 1
+  arrival_hour: 1
+  arrivals: 1
