@@ -1,4 +1,4 @@
-import { fetchData } from './data_actions'
+import { fetchArrivals } from './arrival_actions'
 
 export const UPDATE_FILTER = 'UPDATE_FILTER';
 
@@ -10,5 +10,5 @@ export const changeFilter = (filter, value) => ({
 
 export const updateFilter = (filter, value) => (dispatch, getState) => {
   dispatch(changeFilter(filter, value));
-  return fetchData(getState().ui.filters)(dispatch);
+  return fetchArrivals(getState().ui.filters)(dispatch);
 };

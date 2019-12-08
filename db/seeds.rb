@@ -5,3 +5,18 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
+
+json = ActiveSupport::JSON.decode(File.read('db/sample.json'));
+
+json = json['report'];
+json = json['data'];
+
+json.each do |a| 
+
+	Arrival.create!(
+		:arrival_day_of_week => a['arrival_day_of_week'], 
+		:arrival_hour => a['arrival_hour'], 
+		:arrivals => a['arrivals']
+	) 
+
+end

@@ -1,0 +1,1 @@
+json.extract! arrival, :id, :arrival_day_of_week, :arrival_hour, :arrivals
