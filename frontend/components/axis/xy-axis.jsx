@@ -13,6 +13,8 @@ const XYAxis = ({ xScale, yScale, height }) => {
     	orient: 'left',
     	transform: 'translate(0, 0)',
   	};
+
+
   
   	return (
     	<g className='axis-group'>

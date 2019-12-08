@@ -361,8 +361,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var d3_shape__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! d3-shape */ "./node_modules/d3-shape/src/index.js");
 /* harmony import */ var d3_array__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! d3-array */ "./node_modules/d3-array/src/index.js");
 /* harmony import */ var d3_transition__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! d3-transition */ "./node_modules/d3-transition/src/index.js");
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_8__);
+/* harmony import */ var _chart_grid__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../chart/grid */ "./frontend/components/chart/grid.jsx");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_9__);
+
 
 
 
@@ -375,14 +377,13 @@ __webpack_require__.r(__webpack_exports__);
 
 var LineChartIndex = function LineChartIndex(_ref) {
   var arrivals = _ref.arrivals;
+
+  var results = lodash__WEBPACK_IMPORTED_MODULE_9___default.a.groupBy(arrivals, 'arrival_day_of_week');
+
+  var yArrivals = lodash__WEBPACK_IMPORTED_MODULE_9___default.a.orderBy(arrivals, 'arrivals', 'asc');
+
+  results = lodash__WEBPACK_IMPORTED_MODULE_9___default.a.values(results);
   var parentWidth = 500;
-
-  var result = lodash__WEBPACK_IMPORTED_MODULE_8___default.a.groupBy(arrivals, 'arrival_day_of_week');
-
-  var _final = lodash__WEBPACK_IMPORTED_MODULE_8___default.a.values(result);
-
-  var yArrivals = lodash__WEBPACK_IMPORTED_MODULE_8___default.a.orderBy(arrivals, 'arrivals', 'asc');
-
   var margins = {
     top: 20,
     right: 20,
@@ -391,42 +392,22 @@ var LineChartIndex = function LineChartIndex(_ref) {
   };
   var width = parentWidth - margins.left - margins.right;
   var height = 200 - margins.top - margins.bottom;
-  var ticks = 5;
-  var t = Object(d3_transition__WEBPACK_IMPORTED_MODULE_7__["transition"])().duration(1000);
   var xScale = Object(d3_scale__WEBPACK_IMPORTED_MODULE_2__["scaleBand"])().domain(arrivals.map(function (d) {
     return d.arrival_hour;
   })).rangeRound([0, width]).padding(0.1);
   var yScale = Object(d3_scale__WEBPACK_IMPORTED_MODULE_2__["scaleLinear"])().domain(Object(d3_array__WEBPACK_IMPORTED_MODULE_6__["extent"])(yArrivals, function (d) {
     return d.arrivals;
   })).rangeRound([height, 0]);
-  var lineGenerator = Object(d3_shape__WEBPACK_IMPORTED_MODULE_5__["line"])().x(function (d) {
-    return xScale(d.arrival_hour);
-  }).y(function (d) {
-    return yScale(d.arrivals);
-  }).curve(d3_shape__WEBPACK_IMPORTED_MODULE_5__["curveMonotoneX"]);
-  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("svg", {
-    className: "lineChartSvg",
-    width: width + margins.left + margins.right,
-    height: height + margins.top + margins.bottom
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("g", {
-    transform: "translate(".concat(margins.left, ", ").concat(margins.top, ")")
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_axis_xy_axis__WEBPACK_IMPORTED_MODULE_3__["default"], {
+  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_chart_grid__WEBPACK_IMPORTED_MODULE_8__["default"], {
+    data: results,
+    yArrivals: yArrivals,
     xScale: xScale,
     yScale: yScale,
-    height: height,
-    ticks: ticks,
-    t: t
-  }), _final.map(function (arrival) {
-    return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_line_line__WEBPACK_IMPORTED_MODULE_4__["default"], {
-      key: arrival.id,
-      data: arrival,
-      xScale: xScale,
-      yScale: yScale,
-      lineGenerator: lineGenerator,
-      width: width,
-      height: height
-    });
-  }))));
+    className: "lineChartSvg",
+    margins: margins,
+    width: width + margins.left + margins.right,
+    height: height + margins.top + margins.bottom
+  });
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (LineChartIndex);
@@ -588,6 +569,149 @@ var XYAxis = function XYAxis(_ref) {
 
 /***/ }),
 
+/***/ "./frontend/components/chart/grid.jsx":
+/*!********************************************!*\
+  !*** ./frontend/components/chart/grid.jsx ***!
+  \********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var d3_selection__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! d3-selection */ "./node_modules/d3-selection/src/index.js");
+/* harmony import */ var d3_transition__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! d3-transition */ "./node_modules/d3-transition/src/index.js");
+/* harmony import */ var d3_axis__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! d3-axis */ "./node_modules/d3-axis/src/index.js");
+/* harmony import */ var _axis_xy_axis__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../axis/xy-axis */ "./frontend/components/axis/xy-axis.jsx");
+/* harmony import */ var _line_line__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../line/line */ "./frontend/components/line/line.jsx");
+/* harmony import */ var d3_shape__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! d3-shape */ "./node_modules/d3-shape/src/index.js");
+/* harmony import */ var d3_array__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! d3-array */ "./node_modules/d3-array/src/index.js");
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+
+
+
+
+
+
+
+
+
+var Grid =
+/*#__PURE__*/
+function (_React$Component) {
+  _inherits(Grid, _React$Component);
+
+  function Grid() {
+    var _this;
+
+    _classCallCheck(this, Grid);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Grid).call(this));
+    _this.ref = react__WEBPACK_IMPORTED_MODULE_0___default.a.createRef();
+    return _this;
+  }
+
+  _createClass(Grid, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      var that = this;
+      var node = this.ref.current;
+      var _this$props = this.props,
+          width = _this$props.width,
+          height = _this$props.height,
+          data = _this$props.data,
+          xScale = _this$props.xScale,
+          yScale = _this$props.yScale,
+          margins = _this$props.margins;
+      Object(d3_selection__WEBPACK_IMPORTED_MODULE_1__["select"])(node).append('g').attr('class', 'grid').attr('transform', 'translate(0,' + height + ')').call(that.makeXGridlines(xScale).tickSize(-height).tickFormat(''));
+      Object(d3_selection__WEBPACK_IMPORTED_MODULE_1__["select"])(node).append('g').attr('class', 'grid').call(that.makeYGridlines(yScale).tickSize(-width).tickFormat(''));
+    }
+  }, {
+    key: "makeXGridlines",
+    value: function makeXGridlines(x) {
+      return Object(d3_axis__WEBPACK_IMPORTED_MODULE_3__["axisBottom"])(x).ticks(5);
+    }
+  }, {
+    key: "makeYGridlines",
+    value: function makeYGridlines(y) {
+      return Object(d3_axis__WEBPACK_IMPORTED_MODULE_3__["axisLeft"])(y).ticks(5);
+    }
+  }, {
+    key: "componentDidUpdate",
+    value: function componentDidUpdate() {// this.updateGrid();
+    }
+  }, {
+    key: "updateGrid",
+    value: function updateGrid() {}
+  }, {
+    key: "render",
+    value: function render() {
+      var _this$props2 = this.props,
+          width = _this$props2.width,
+          height = _this$props2.height,
+          data = _this$props2.data,
+          margins = _this$props2.margins,
+          yArrivals = _this$props2.yArrivals,
+          xScale = _this$props2.xScale,
+          yScale = _this$props2.yScale;
+      var ticks = 5;
+      var t = Object(d3_transition__WEBPACK_IMPORTED_MODULE_2__["transition"])().duration(1000);
+      var lineGenerator = Object(d3_shape__WEBPACK_IMPORTED_MODULE_6__["line"])().x(function (d) {
+        return xScale(d.arrival_hour);
+      }).y(function (d) {
+        return yScale(d.arrivals);
+      }).curve(d3_shape__WEBPACK_IMPORTED_MODULE_6__["curveLinear"]);
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("svg", {
+        className: "lineChartSvg",
+        width: width,
+        height: 500
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("g", {
+        transform: "translate(".concat(margins.left, ", ").concat(margins.top, ")")
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_axis_xy_axis__WEBPACK_IMPORTED_MODULE_4__["default"], {
+        xScale: xScale,
+        yScale: yScale,
+        height: height,
+        ticks: ticks,
+        t: t
+      }), data.map(function (arrival, index) {
+        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_line_line__WEBPACK_IMPORTED_MODULE_5__["default"], {
+          key: arrival[0]['id'],
+          data: arrival,
+          xScale: xScale,
+          yScale: yScale,
+          lineGenerator: lineGenerator,
+          width: width,
+          height: height
+        });
+      })));
+    }
+  }]);
+
+  return Grid;
+}(react__WEBPACK_IMPORTED_MODULE_0___default.a.Component);
+
+/* harmony default export */ __webpack_exports__["default"] = (Grid);
+
+/***/ }),
+
 /***/ "./frontend/components/line/line.jsx":
 /*!*******************************************!*\
   !*** ./frontend/components/line/line.jsx ***!
@@ -647,32 +771,23 @@ function (_React$Component) {
           yScale = _this$props.yScale,
           data = _this$props.data,
           lineGenerator = _this$props.lineGenerator;
+      var scale = this.props.scale;
       var initialData = data.map(function (d) {
         return {
           arrival_hour: d.arrival_hour,
           arrivals: d.arrivals
         };
       });
-      Object(d3_selection__WEBPACK_IMPORTED_MODULE_1__["select"])(node).append('path').datum(initialData).attr('id', 'line').attr('stroke', 'blue').attr('stroke-width', 1).attr('fill', 'none').attr('d', lineGenerator); // select(node)
-      //   .selectAll('circle')
-      //   .data(data)
-      //   .enter()
-      //   .append('circle')
-      //   .attr('class', 'circle')
-      //   .attr('stroke', '#ECC417')
-      //   .attr('stroke-width', '2')
-      //   .attr('fill', '#333')
-      //   .attr('r', 3)
-      //   .attr('cx', (d, key) => xScale(key))
-      //   .attr('cy', d => yScale(d.count));
-
-      this.updateChart();
+      Object(d3_selection__WEBPACK_IMPORTED_MODULE_1__["select"])(node).append('path').datum(initialData).attr('id', 'line').attr('stroke', 'blue').attr('stroke-width', 1).attr('fill', 'none').attr('d', lineGenerator);
+      Object(d3_selection__WEBPACK_IMPORTED_MODULE_1__["select"])(node).selectAll('circle').data(data).enter().append('circle').attr('class', 'circle').attr('stroke', '#ECC417').attr('stroke-width', '2').attr('fill', '#333').attr('r', 3).attr('cx', function (d) {
+        return xScale(d.arrival_hour);
+      }).attr('cy', function (d) {
+        return yScale(d.arrivals);
+      });
     }
   }, {
     key: "componentDidUpdate",
-    value: function componentDidUpdate() {
-      this.updateChart();
-    }
+    value: function componentDidUpdate() {}
   }, {
     key: "updateChart",
     value: function updateChart() {
@@ -681,20 +796,26 @@ function (_React$Component) {
           xScale = _this$props2.xScale,
           yScale = _this$props2.yScale,
           data = _this$props2.data;
-      var t = Object(d3_transition__WEBPACK_IMPORTED_MODULE_2__["transition"])().duration(1000);
+      var t = Object(d3_transition__WEBPACK_IMPORTED_MODULE_2__["transition"])().duration(5000);
       var line = Object(d3_selection__WEBPACK_IMPORTED_MODULE_1__["select"])('#line');
       var dot = Object(d3_selection__WEBPACK_IMPORTED_MODULE_1__["selectAll"])('.circle');
-      line.datum(data).transition(t).attr('d', lineGenerator); // dot
-      //   .data(data)
-      //   .transition(t)
-      //   .attr('cx', (d, key) => xScale(key))
-      //   .attr('cy', d => yScale(d.count));
+      line.datum(data).transition(t).attr('d', lineGenerator);
+      dot.data(data).transition(t).attr('cx', function (d) {
+        return xScale(d.arrival_hour);
+      }).attr('cy', function (d) {
+        return yScale(d.arrivals);
+      });
     }
   }, {
     key: "render",
     value: function render() {
+      var data = this.props.data;
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("g", {
+        id: data[0]['id'],
         className: "line-group",
+        styles: {
+          color: 'red'
+        },
         ref: this.ref
       });
     }

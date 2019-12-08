@@ -11,6 +11,7 @@ class Line extends React.Component {
   	componentDidMount() {
     	const node = this.ref.current;
     	const { xScale, yScale, data, lineGenerator } = this.props;
+    	const { scale } = this.props;
 
     	const initialData = data.map(d => ({
       		arrival_hour: d.arrival_hour,
@@ -26,24 +27,22 @@ class Line extends React.Component {
       		.attr('fill', 'none')
       		.attr('d', lineGenerator);
 
-    // select(node)
-    //   .selectAll('circle')
-    //   .data(data)
-    //   .enter()
-    //   .append('circle')
-    //   .attr('class', 'circle')
-    //   .attr('stroke', '#ECC417')
-    //   .attr('stroke-width', '2')
-    //   .attr('fill', '#333')
-    //   .attr('r', 3)
-    //   .attr('cx', (d, key) => xScale(key))
-    //   .attr('cy', d => yScale(d.count));
+	    select(node)
+	      	.selectAll('circle')
+	      	.data(data)
+	      	.enter()
+	      	.append('circle')
+	      	.attr('class', 'circle')
+	      	.attr('stroke', '#ECC417')
+	      	.attr('stroke-width', '2')
+	      	.attr('fill', '#333')
+	      	.attr('r', 3)
+	      	.attr('cx', d => xScale(d.arrival_hour))
+     		.attr('cy', d => yScale(d.arrivals));
 
-    	this.updateChart();
   	}
   
   	componentDidUpdate() {
-    	this.updateChart();
   	}
   
   	updateChart() {
@@ -51,7 +50,7 @@ class Line extends React.Component {
           	lineGenerator, xScale, yScale, data,
         } = this.props;
 
-    	const t = transition().duration(1000);
+    	const t = transition().duration(5000);
 
     	const line = select('#line');
     	const dot = selectAll('.circle');
@@ -61,16 +60,19 @@ class Line extends React.Component {
       		.transition(t)
       		.attr('d', lineGenerator);
 
-    // dot
-    //   .data(data)
-    //   .transition(t)
-    //   .attr('cx', (d, key) => xScale(key))
-    //   .attr('cy', d => yScale(d.count));
+      	 dot
+      		.data(data)
+      		.transition(t)
+      		.attr('cx', d => xScale(d.arrival_hour))
+      		.attr('cy', d => yScale(d.arrivals));
+
   	}
   	
   	render() {
+  		const { data } = this.props;
+
     	return (
-    		<g className="line-group" ref={this.ref} />
+    		<g id={data[0]['id']} className="line-group" styles={{ color: 'red' }} ref={this.ref} />
     	);
   	}
 }
