@@ -1,0 +1,29 @@
+.tick line {
+  display: none;
+}
+
+.line-graph-card {
+	border: thin solid #D0D0D0;
+	border-radius: 5px;
+	margin-left: 25px;
+	margin-right: 25px;
+	display: inline-block;
+	background-color: white;
+}
+
+.lineChartSvg {
+	padding-left: 10px;
+}
+
+body, html {
+	background-color: #F8F8F8;
+	font-family: Tahoma, Geneva, sans-serif;
+}
+
+.tick text {
+	color: #787878;
+}
+
+h2 {
+	margin-left: 40px;
+}

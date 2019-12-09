@@ -14,11 +14,9 @@ class Grid extends React.Component {
 	}
 	
 	componentDidMount() {
-
-
         const that = this;
         const node = this.ref.current;
-        const { width, height, data, xScale, yScale, margins } = this.props;
+        const { width, height, xScale, yScale } = this.props;
 
         select(node)
             .append('g')
@@ -44,14 +42,14 @@ class Grid extends React.Component {
     }
   
     componentDidUpdate() {
-        // this.updateGrid();
+        // use this for animations and transitions
     }
   
 	updateGrid() {
     }
   	
   	render() {
-        const { width, height, data, margins, yArrivals, xScale, yScale } = this.props;
+        const { width, height, data, margins, xScale, yScale } = this.props;
         const ticks = 5;
         const t = transition().duration(1000);
 
@@ -61,11 +59,11 @@ class Grid extends React.Component {
             .curve(curveLinear);
 
     	return (
-    		<svg className='lineChartSvg' width={width} height={500}>
+    		<svg className='lineChartSvg' width={width + margins.left + margins.right} height={height + margins.top + margins.bottom + 20}>
                 <g transform={`translate(${margins.left}, ${margins.top})`}>
                     <XYAxis {...{ xScale, yScale, height, ticks, t }} />
                     {data.map((arrival, index) => (
-                        <Line key={arrival[0]['id']} data={arrival} xScale={xScale} yScale={yScale} lineGenerator={lineGenerator} width={width} height={height} />  
+                        <Line key={index} kIndex={index} data={arrival} xScale={xScale} yScale={yScale} lineGenerator={lineGenerator} width={width} height={height} />  
                     ))} 
                 </g>
             </svg>

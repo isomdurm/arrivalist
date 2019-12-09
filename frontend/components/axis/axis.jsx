@@ -1,5 +1,5 @@
 import React from 'react';
-import { select, selectAll } from 'd3-selection';
+import { select, selectAll, append } from 'd3-selection';
 import { axisBottom, axisLeft } from 'd3-axis';
 import { transition } from 'd3-transition';
 
@@ -8,7 +8,7 @@ class Axis extends React.Component {
     	super();
     	this.ref = React.createRef();
   	}
-  	
+
   	componentDidMount() {
     	this.renderAxis();
   	}
@@ -18,20 +18,43 @@ class Axis extends React.Component {
   	}
   
   	renderAxis() {
+  		const that = this;
     	const { scale, orient, ticks } = this.props;
     	const node = this.ref.current;
-    	let axis;
+    	let axis, translate, title;
 
     	if (orient === 'bottom') {
-      		axis = axisBottom(scale);
-    	}
-    
-    	if (orient === 'left') {
+      		axis = axisBottom(scale)
+      					.tickSize(0)
+      					.tickSizeOuter(0)
+
+      		translate = 'translate(480, 30)';
+      		title = 'Days';
+
+      		select(node).call(axis)
+    		.append('text')
+    		.attr('fill', 'black')
+    		.attr('transform',translate)
+    		.text(title)
+
+    	} else {
       		axis = axisLeft(scale)
-        		.ticks(ticks);
+        		.ticks(ticks)
+        			.tickSize(0)
+        			.tickSizeOuter(0)
+
+        	translate = 'rotate(-90)';
+        	title = 'Visits';
+
+        	select(node).call(axis)
+    		.append('text')
+    		.attr('fill', 'black')
+    		.attr('transform',translate)
+    		.attr("y", -42)
+      		.attr("x",-220)
+    		.text(title);
     	}
-    	
-    	select(node).call(axis);
+
   	}
   	
   	updateAxis() {

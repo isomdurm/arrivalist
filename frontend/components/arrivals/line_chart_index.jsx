@@ -17,7 +17,7 @@ const LineChartIndex = ({ arrivals }) => {
 	const yArrivals = _.orderBy(arrivals, 'arrivals', 'asc');
 	results = _.values(results);
 
-	const parentWidth = 500;
+	const parentWidth = 1000;
 
 	const margins = {
     	top: 20,
@@ -26,19 +26,30 @@ const LineChartIndex = ({ arrivals }) => {
       	left: 50,
     };
 
+    function toHour(hour) {
+  		const hours = ['12AM', '1AM', '2AM', '3AM', '4AM', '5AM', '6AM', '7AM', '8AM', '9AM', '10AM', '11AM', '12PM', '1PM', '2PM', '3PM', '4PM', '5PM', '6PM', '7PM', '8PM', '9PM', '10PM', '11PM', '12AM'];
+
+  		return hours[hour];
+  	}
+
     const width = parentWidth - margins.left - margins.right;
-    const height = 200 - margins.top - margins.bottom;
+    const height = 500 - margins.top - margins.bottom;
 
     const xScale = scaleBand()
-            .domain(arrivals.map(d => d.arrival_hour))
-            .rangeRound([0, width]).padding(0.1);
+            .domain(arrivals.map(d => toHour(d.arrival_hour)))
+            .range([0, width]);
 
         const yScale = scaleLinear()
             .domain(extent(yArrivals, d => d.arrivals))
-            .rangeRound([height, 0])
+            .range([height, 0])
 
   	return (
-        <Grid data={results} yArrivals={yArrivals} xScale={xScale} yScale={yScale} className='lineChartSvg' margins={margins} width={width + margins.left + margins.right} height={height + margins.top + margins.bottom}/>
+  		<React.Fragment>
+  			<h2>Visits By Time & Day</h2>
+  			<div className='line-graph-card'>
+        		<Grid data={results} yArrivals={yArrivals} xScale={xScale} yScale={yScale} className='lineChartSvg' margins={margins} width={width} height={height}/>
+        	</div>
+        </React.Fragment>
   	);
 };
 

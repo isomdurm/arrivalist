@@ -383,31 +383,39 @@ var LineChartIndex = function LineChartIndex(_ref) {
   var yArrivals = lodash__WEBPACK_IMPORTED_MODULE_9___default.a.orderBy(arrivals, 'arrivals', 'asc');
 
   results = lodash__WEBPACK_IMPORTED_MODULE_9___default.a.values(results);
-  var parentWidth = 500;
+  var parentWidth = 1000;
   var margins = {
     top: 20,
     right: 20,
     bottom: 20,
     left: 50
   };
+
+  function toHour(hour) {
+    var hours = ['12AM', '1AM', '2AM', '3AM', '4AM', '5AM', '6AM', '7AM', '8AM', '9AM', '10AM', '11AM', '12PM', '1PM', '2PM', '3PM', '4PM', '5PM', '6PM', '7PM', '8PM', '9PM', '10PM', '11PM', '12AM'];
+    return hours[hour];
+  }
+
   var width = parentWidth - margins.left - margins.right;
-  var height = 200 - margins.top - margins.bottom;
+  var height = 500 - margins.top - margins.bottom;
   var xScale = Object(d3_scale__WEBPACK_IMPORTED_MODULE_2__["scaleBand"])().domain(arrivals.map(function (d) {
-    return d.arrival_hour;
-  })).rangeRound([0, width]).padding(0.1);
+    return toHour(d.arrival_hour);
+  })).range([0, width]);
   var yScale = Object(d3_scale__WEBPACK_IMPORTED_MODULE_2__["scaleLinear"])().domain(Object(d3_array__WEBPACK_IMPORTED_MODULE_6__["extent"])(yArrivals, function (d) {
     return d.arrivals;
-  })).rangeRound([height, 0]);
-  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_chart_grid__WEBPACK_IMPORTED_MODULE_8__["default"], {
+  })).range([height, 0]);
+  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0___default.a.Fragment, null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h2", null, "Visits By Time & Day"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "line-graph-card"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_chart_grid__WEBPACK_IMPORTED_MODULE_8__["default"], {
     data: results,
     yArrivals: yArrivals,
     xScale: xScale,
     yScale: yScale,
     className: "lineChartSvg",
     margins: margins,
-    width: width + margins.left + margins.right,
-    height: height + margins.top + margins.bottom
-  });
+    width: width,
+    height: height
+  })));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (LineChartIndex);
@@ -479,22 +487,25 @@ function (_React$Component) {
   }, {
     key: "renderAxis",
     value: function renderAxis() {
+      var that = this;
       var _this$props = this.props,
           scale = _this$props.scale,
           orient = _this$props.orient,
           ticks = _this$props.ticks;
       var node = this.ref.current;
-      var axis;
+      var axis, translate, title;
 
       if (orient === 'bottom') {
-        axis = Object(d3_axis__WEBPACK_IMPORTED_MODULE_2__["axisBottom"])(scale);
+        axis = Object(d3_axis__WEBPACK_IMPORTED_MODULE_2__["axisBottom"])(scale).tickSize(0).tickSizeOuter(0);
+        translate = 'translate(480, 30)';
+        title = 'Days';
+        Object(d3_selection__WEBPACK_IMPORTED_MODULE_1__["select"])(node).call(axis).append('text').attr('fill', 'black').attr('transform', translate).text(title);
+      } else {
+        axis = Object(d3_axis__WEBPACK_IMPORTED_MODULE_2__["axisLeft"])(scale).ticks(ticks).tickSize(0).tickSizeOuter(0);
+        translate = 'rotate(-90)';
+        title = 'Visits';
+        Object(d3_selection__WEBPACK_IMPORTED_MODULE_1__["select"])(node).call(axis).append('text').attr('fill', 'black').attr('transform', translate).attr("y", -42).attr("x", -220).text(title);
       }
-
-      if (orient === 'left') {
-        axis = Object(d3_axis__WEBPACK_IMPORTED_MODULE_2__["axisLeft"])(scale).ticks(ticks);
-      }
-
-      Object(d3_selection__WEBPACK_IMPORTED_MODULE_1__["select"])(node).call(axis);
     }
   }, {
     key: "updateAxis",
@@ -637,10 +648,8 @@ function (_React$Component) {
       var _this$props = this.props,
           width = _this$props.width,
           height = _this$props.height,
-          data = _this$props.data,
           xScale = _this$props.xScale,
-          yScale = _this$props.yScale,
-          margins = _this$props.margins;
+          yScale = _this$props.yScale;
       Object(d3_selection__WEBPACK_IMPORTED_MODULE_1__["select"])(node).append('g').attr('class', 'grid').attr('transform', 'translate(0,' + height + ')').call(that.makeXGridlines(xScale).tickSize(-height).tickFormat(''));
       Object(d3_selection__WEBPACK_IMPORTED_MODULE_1__["select"])(node).append('g').attr('class', 'grid').call(that.makeYGridlines(yScale).tickSize(-width).tickFormat(''));
     }
@@ -656,7 +665,7 @@ function (_React$Component) {
     }
   }, {
     key: "componentDidUpdate",
-    value: function componentDidUpdate() {// this.updateGrid();
+    value: function componentDidUpdate() {// use this for animations and transitions
     }
   }, {
     key: "updateGrid",
@@ -669,7 +678,6 @@ function (_React$Component) {
           height = _this$props2.height,
           data = _this$props2.data,
           margins = _this$props2.margins,
-          yArrivals = _this$props2.yArrivals,
           xScale = _this$props2.xScale,
           yScale = _this$props2.yScale;
       var ticks = 5;
@@ -681,8 +689,8 @@ function (_React$Component) {
       }).curve(d3_shape__WEBPACK_IMPORTED_MODULE_6__["curveLinear"]);
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("svg", {
         className: "lineChartSvg",
-        width: width,
-        height: 500
+        width: width + margins.left + margins.right,
+        height: height + margins.top + margins.bottom + 20
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("g", {
         transform: "translate(".concat(margins.left, ", ").concat(margins.top, ")")
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_axis_xy_axis__WEBPACK_IMPORTED_MODULE_4__["default"], {
@@ -693,7 +701,8 @@ function (_React$Component) {
         t: t
       }), data.map(function (arrival, index) {
         return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_line_line__WEBPACK_IMPORTED_MODULE_5__["default"], {
-          key: arrival[0]['id'],
+          key: index,
+          kIndex: index,
           data: arrival,
           xScale: xScale,
           yScale: yScale,
@@ -735,9 +744,9 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
 
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
@@ -759,12 +768,14 @@ function (_React$Component) {
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Line).call(this));
     _this.ref = react__WEBPACK_IMPORTED_MODULE_0___default.a.createRef();
+    _this.handleMouseOver = _this.handleMouseOver.bind(_assertThisInitialized(_this));
     return _this;
   }
 
   _createClass(Line, [{
     key: "componentDidMount",
     value: function componentDidMount() {
+      var that = this;
       var node = this.ref.current;
       var _this$props = this.props,
           xScale = _this$props.xScale,
@@ -774,13 +785,14 @@ function (_React$Component) {
       var scale = this.props.scale;
       var initialData = data.map(function (d) {
         return {
-          arrival_hour: d.arrival_hour,
+          arrival_hour: that.toHour(d.arrival_hour),
           arrivals: d.arrivals
         };
       });
-      Object(d3_selection__WEBPACK_IMPORTED_MODULE_1__["select"])(node).append('path').datum(initialData).attr('id', 'line').attr('stroke', 'blue').attr('stroke-width', 1).attr('fill', 'none').attr('d', lineGenerator);
-      Object(d3_selection__WEBPACK_IMPORTED_MODULE_1__["select"])(node).selectAll('circle').data(data).enter().append('circle').attr('class', 'circle').attr('stroke', '#ECC417').attr('stroke-width', '2').attr('fill', '#333').attr('r', 3).attr('cx', function (d) {
-        return xScale(d.arrival_hour);
+      var colors = ['rgba(235, 159, 211, 0.8)', 'rgba(102, 153, 196, 0.8)', 'rgba(166, 130, 122, 0.8)', 'rgba(108, 181, 105, 0.8)', 'rgba(226, 98, 97, 0.8)', 'rgba(248, 158, 96, 0.8)', 'rgba(180, 151, 205, 0.8)'];
+      Object(d3_selection__WEBPACK_IMPORTED_MODULE_1__["select"])(node).append('path').datum(initialData).attr('id', 'line').attr('stroke', colors[node.id]).attr('stroke-width', 1).attr('fill', 'none').attr('d', lineGenerator);
+      Object(d3_selection__WEBPACK_IMPORTED_MODULE_1__["select"])(node).selectAll('circle').data(data).enter().append('circle').attr('class', 'circle').attr('stroke', '#ECC417').attr('stroke-width', '0').attr('fill', colors[node.id]).attr('r', 3).attr('cx', function (d) {
+        return xScale(that.toHour(d.arrival_hour));
       }).attr('cy', function (d) {
         return yScale(d.arrivals);
       });
@@ -789,6 +801,24 @@ function (_React$Component) {
     key: "componentDidUpdate",
     value: function componentDidUpdate() {}
   }, {
+    key: "toHour",
+    value: function toHour(hour) {
+      var hours = ['12AM', '1AM', '2AM', '3AM', '4AM', '5AM', '6AM', '7AM', '8AM', '9AM', '10AM', '11AM', '12PM', '1PM', '2PM', '3PM', '4PM', '5PM', '6PM', '7PM', '8PM', '9PM', '10PM', '11PM', '12AM'];
+      return hours[hour];
+    }
+  }, {
+    key: "handleMouseOver",
+    value: function handleMouseOver(obj) {
+      console.log(obj);
+      var node = obj.ref.current;
+      console.log(node);
+      Object(d3_selection__WEBPACK_IMPORTED_MODULE_1__["select"])(node).attr({
+        fill: "orange",
+        r: 20 * 2
+      });
+      this.updateChart();
+    }
+  }, {
     key: "updateChart",
     value: function updateChart() {
       var _this$props2 = this.props,
@@ -796,26 +826,19 @@ function (_React$Component) {
           xScale = _this$props2.xScale,
           yScale = _this$props2.yScale,
           data = _this$props2.data;
-      var t = Object(d3_transition__WEBPACK_IMPORTED_MODULE_2__["transition"])().duration(5000);
-      var line = Object(d3_selection__WEBPACK_IMPORTED_MODULE_1__["select"])('#line');
+      var t = Object(d3_transition__WEBPACK_IMPORTED_MODULE_2__["transition"])().duration(500);
       var dot = Object(d3_selection__WEBPACK_IMPORTED_MODULE_1__["selectAll"])('.circle');
-      line.datum(data).transition(t).attr('d', lineGenerator);
-      dot.data(data).transition(t).attr('cx', function (d) {
-        return xScale(d.arrival_hour);
-      }).attr('cy', function (d) {
-        return yScale(d.arrivals);
-      });
+      dot.data(data).transition(t);
     }
   }, {
     key: "render",
     value: function render() {
-      var data = this.props.data;
+      var _this$props3 = this.props,
+          data = _this$props3.data,
+          kIndex = _this$props3.kIndex;
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("g", {
-        id: data[0]['id'],
+        id: kIndex,
         className: "line-group",
-        styles: {
-          color: 'red'
-        },
         ref: this.ref
       });
     }
