@@ -16,10 +16,20 @@ class Axis extends React.Component {
   	componentDidUpdate() {
     	this.updateAxis();
   	}
+
+    makeXGridlines(x) {
+        return axisBottom(x)
+            .ticks(11)
+    }
+
+    makeYGridlines(y) {
+        return axisLeft(y)
+            .ticks(11)
+    }
   
   	renderAxis() {
   		const that = this;
-    	const { scale, orient, ticks } = this.props;
+    	const { scale, xScale, yScale, height, width, orient, ticks } = this.props;
     	const node = this.ref.current;
     	let axis, translate, title;
 
@@ -37,6 +47,13 @@ class Axis extends React.Component {
     		.attr('transform',translate)
     		.text(title)
 
+        select(node)
+            .append('g')
+          .attr('class', 'grid')
+          .attr('transform', 'translate(20,0)')
+          .call(that.makeXGridlines(xScale).tickSize(-height).tickFormat(''))
+          .call(g => g.select(".domain").remove())
+
     	} else {
       		axis = axisLeft(scale)
         		.ticks(ticks)
@@ -53,6 +70,14 @@ class Axis extends React.Component {
     		.attr("y", -42)
       		.attr("x",-220)
     		.text(title);
+
+         select(node)
+            .append('g')
+            .attr('class', 'grid')
+            .call(that.makeYGridlines(yScale).tickSize(-width).tickFormat(''))
+            .call(g => g.select(".domain").remove())
+
+
     	}
 
   	}
