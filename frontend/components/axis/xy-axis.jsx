@@ -1,7 +1,7 @@
 import React from 'react';
 import Axis from './axis';
 
-const XYAxis = ({ xScale, yScale, height }) => {
+const XYAxis = ({ xScale, yScale, height, width }) => {
   	const xSettings = {
     	scale: xScale,
     	orient: 'bottom',
@@ -16,8 +16,8 @@ const XYAxis = ({ xScale, yScale, height }) => {
   
   	return (
     	<g className='axis-group'>
-      		<Axis {...xSettings} />
-      		<Axis {...ySettings} />
+      		<Axis xScale={xScale} yScale={yScale} height={height} width={width} {...xSettings} />
+      		<Axis xScale={xScale} yScale={yScale} height={height} width={width} {...ySettings} />
     	</g>
   	);
 };

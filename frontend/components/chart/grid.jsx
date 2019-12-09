@@ -17,28 +17,6 @@ class Grid extends React.Component {
         const that = this;
         const node = this.ref.current;
         const { width, height, xScale, yScale } = this.props;
-
-        select(node)
-            .append('g')
-  		    .attr('class', 'grid')
-  		    .attr('transform', 'translate(0,' + height + ')')
-  		    .call(that.makeXGridlines(xScale).tickSize(-height).tickFormat(''))
-
-        select(node)
-            .append('g')
-            .attr('class', 'grid')
-            .call(that.makeYGridlines(yScale).tickSize(-width).tickFormat(''))
-
-    }
-
-    makeXGridlines(x) {
-        return axisBottom(x)
-            .ticks(5)
-    }
-
-    makeYGridlines(y) {
-        return axisLeft(y)
-            .ticks(5)
     }
   
     componentDidUpdate() {
@@ -61,7 +39,7 @@ class Grid extends React.Component {
     	return (
     		<svg className='lineChartSvg' width={width + margins.left + margins.right} height={height + margins.top + margins.bottom + 20}>
                 <g transform={`translate(${margins.left}, ${margins.top})`}>
-                    <XYAxis {...{ xScale, yScale, height, ticks, t }} />
+                    <XYAxis {...{ width, xScale, yScale, height, ticks, t }} />
                     {data.map((arrival, index) => (
                         <Line key={index} kIndex={index} data={arrival} xScale={xScale} yScale={yScale} lineGenerator={lineGenerator} width={width} height={height} />  
                     ))} 

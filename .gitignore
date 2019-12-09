@@ -7,6 +7,10 @@
 # Ignore bundler config.
 /.bundle
 
+/app/assets/javascripts/generated/*
+latest.dump
+.byebug_history
+
 # Ignore all logfiles and tempfiles.
 /log/*
 /tmp/*
