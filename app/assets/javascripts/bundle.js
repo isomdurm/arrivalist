@@ -485,11 +485,25 @@ function (_React$Component) {
       this.updateAxis();
     }
   }, {
+    key: "makeXGridlines",
+    value: function makeXGridlines(x) {
+      return Object(d3_axis__WEBPACK_IMPORTED_MODULE_2__["axisBottom"])(x).ticks(11);
+    }
+  }, {
+    key: "makeYGridlines",
+    value: function makeYGridlines(y) {
+      return Object(d3_axis__WEBPACK_IMPORTED_MODULE_2__["axisLeft"])(y).ticks(11);
+    }
+  }, {
     key: "renderAxis",
     value: function renderAxis() {
       var that = this;
       var _this$props = this.props,
           scale = _this$props.scale,
+          xScale = _this$props.xScale,
+          yScale = _this$props.yScale,
+          height = _this$props.height,
+          width = _this$props.width,
           orient = _this$props.orient,
           ticks = _this$props.ticks;
       var node = this.ref.current;
@@ -500,11 +514,17 @@ function (_React$Component) {
         translate = 'translate(480, 30)';
         title = 'Days';
         Object(d3_selection__WEBPACK_IMPORTED_MODULE_1__["select"])(node).call(axis).append('text').attr('fill', 'black').attr('transform', translate).text(title);
+        Object(d3_selection__WEBPACK_IMPORTED_MODULE_1__["select"])(node).append('g').attr('class', 'grid').attr('transform', 'translate(20,0)').call(that.makeXGridlines(xScale).tickSize(-height).tickFormat('')).call(function (g) {
+          return g.select(".domain").remove();
+        });
       } else {
         axis = Object(d3_axis__WEBPACK_IMPORTED_MODULE_2__["axisLeft"])(scale).ticks(ticks).tickSize(0).tickSizeOuter(0);
         translate = 'rotate(-90)';
         title = 'Visits';
         Object(d3_selection__WEBPACK_IMPORTED_MODULE_1__["select"])(node).call(axis).append('text').attr('fill', 'black').attr('transform', translate).attr("y", -42).attr("x", -220).text(title);
+        Object(d3_selection__WEBPACK_IMPORTED_MODULE_1__["select"])(node).append('g').attr('class', 'grid').call(that.makeYGridlines(yScale).tickSize(-width).tickFormat('')).call(function (g) {
+          return g.select(".domain").remove();
+        });
       }
     }
   }, {
@@ -554,13 +574,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _axis__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./axis */ "./frontend/components/axis/axis.jsx");
+function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
+
 
 
 
 var XYAxis = function XYAxis(_ref) {
   var xScale = _ref.xScale,
       yScale = _ref.yScale,
-      height = _ref.height;
+      height = _ref.height,
+      width = _ref.width;
   var xSettings = {
     scale: xScale,
     orient: 'bottom',
@@ -573,7 +596,17 @@ var XYAxis = function XYAxis(_ref) {
   };
   return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("g", {
     className: "axis-group"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_axis__WEBPACK_IMPORTED_MODULE_1__["default"], xSettings), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_axis__WEBPACK_IMPORTED_MODULE_1__["default"], ySettings));
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_axis__WEBPACK_IMPORTED_MODULE_1__["default"], _extends({
+    xScale: xScale,
+    yScale: yScale,
+    height: height,
+    width: width
+  }, xSettings)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_axis__WEBPACK_IMPORTED_MODULE_1__["default"], _extends({
+    xScale: xScale,
+    yScale: yScale,
+    height: height,
+    width: width
+  }, ySettings)));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (XYAxis);
@@ -650,18 +683,6 @@ function (_React$Component) {
           height = _this$props.height,
           xScale = _this$props.xScale,
           yScale = _this$props.yScale;
-      Object(d3_selection__WEBPACK_IMPORTED_MODULE_1__["select"])(node).append('g').attr('class', 'grid').attr('transform', 'translate(0,' + height + ')').call(that.makeXGridlines(xScale).tickSize(-height).tickFormat(''));
-      Object(d3_selection__WEBPACK_IMPORTED_MODULE_1__["select"])(node).append('g').attr('class', 'grid').call(that.makeYGridlines(yScale).tickSize(-width).tickFormat(''));
-    }
-  }, {
-    key: "makeXGridlines",
-    value: function makeXGridlines(x) {
-      return Object(d3_axis__WEBPACK_IMPORTED_MODULE_3__["axisBottom"])(x).ticks(5);
-    }
-  }, {
-    key: "makeYGridlines",
-    value: function makeYGridlines(y) {
-      return Object(d3_axis__WEBPACK_IMPORTED_MODULE_3__["axisLeft"])(y).ticks(5);
     }
   }, {
     key: "componentDidUpdate",
@@ -694,6 +715,7 @@ function (_React$Component) {
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("g", {
         transform: "translate(".concat(margins.left, ", ").concat(margins.top, ")")
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_axis_xy_axis__WEBPACK_IMPORTED_MODULE_4__["default"], {
+        width: width,
         xScale: xScale,
         yScale: yScale,
         height: height,
