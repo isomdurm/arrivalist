@@ -6,4 +6,4 @@ npm install
 
 db:setup
 
-rails -s
+rails s
